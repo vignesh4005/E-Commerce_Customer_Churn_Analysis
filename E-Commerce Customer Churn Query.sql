@@ -9,8 +9,8 @@ SET SQL_SAFE_UPDATES = 0;
 UPDATE customer_churn c
 JOIN (
 	SELECT ROUND(AVG(WarehouseToHome)) AS avg_value
-    FROM customer_churn
-    WHERE WarehouseToHome IS NOT NULL
+    	FROM customer_churn
+    	WHERE WarehouseToHome IS NOT NULL
 ) AS avg_table
 SET c.WarehouseToHome = avg_table.avg_value
 WHERE c.WarehouseToHome IS NULL;
@@ -18,8 +18,8 @@ WHERE c.WarehouseToHome IS NULL;
 UPDATE customer_churn c
 JOIN (
 	SELECT ROUND(AVG(HourSpendOnApp)) AS avg_value
-    FROM customer_churn
-    WHERE HourSpendOnApp IS NOT NULL
+   	FROM customer_churn
+    	WHERE HourSpendOnApp IS NOT NULL
 ) AS avg_table
 SET c.HourSpendOnApp = avg_table.avg_value
 WHERE c.HourSpendOnApp IS NULL;
@@ -27,8 +27,8 @@ WHERE c.HourSpendOnApp IS NULL;
 UPDATE customer_churn c
 JOIN (
 	SELECT ROUND(AVG(OrderAmountHikeFromlastYear)) AS avg_value
-    FROM customer_churn
-    WHERE OrderAmountHikeFromlastYear IS NOT NULL
+    	FROM customer_churn
+    	WHERE OrderAmountHikeFromlastYear IS NOT NULL
 ) AS avg_table
 SET c.OrderAmountHikeFromlastYear = avg_table.avg_value
 WHERE c.OrderAmountHikeFromlastYear IS NULL;
@@ -36,8 +36,8 @@ WHERE c.OrderAmountHikeFromlastYear IS NULL;
 UPDATE customer_churn c
 JOIN (
 	SELECT ROUND(AVG(DaySinceLastOrder)) AS avg_value
-    FROM customer_churn
-    WHERE DaySinceLastOrder IS NOT NULL
+    	FROM customer_churn
+    	WHERE DaySinceLastOrder IS NOT NULL
 ) AS avg_table
 SET c.DaySinceLastOrder = avg_table.avg_value
 WHERE c.DaySinceLastOrder IS NULL;
@@ -87,22 +87,22 @@ WHERE WarehouseToHome > 100;
 -- REPLACE
 UPDATE customer_churn
 SET PreferredLoginDevice = CASE 
-								WHEN PreferredLoginDevice = 'Phone' THEN 'Mobile Phone'
+				WHEN PreferredLoginDevice = 'Phone' THEN 'Mobile Phone'
                                 ELSE PreferredLoginDevice
-						   END,
+			   END,
     PreferedOrderCat = CASE
-							WHEN PreferedOrderCat = 'Mobile' THEN 'Mobile Phone'
+			    WHEN PreferedOrderCat = 'Mobile' THEN 'Mobile Phone'
                             ELSE PreferedOrderCat
-					   END
+		       END
 WHERE PreferredLoginDevice = 'Phone' OR PreferedOrderCat = 'Mobile';
 
 -- STANDARDIZE PAYMENT MODE VALUES
 UPDATE customer_churn
 SET PreferredPaymentMode = CASE
-								WHEN PreferredPaymentMode = 'COD' THEN 'Cash on Delivery'
-								WHEN PreferredPaymentMode = 'CC' THEN 'Credit Card'
-								ELSE PreferredPaymentMode
-						   END;    
+				WHEN PreferredPaymentMode = 'COD' THEN 'Cash on Delivery'
+				WHEN PreferredPaymentMode = 'CC' THEN 'Credit Card'
+				ELSE PreferredPaymentMode
+			   END;    
 
 -- DATA TARNSFORMATION
 
@@ -118,7 +118,7 @@ ADD COLUMN ChurnStatus VARCHAR(7);
 
 UPDATE customer_churn
 SET ComplaintReceived = IF(complain = 1, 'Yes', 'No'),
-	ChurnStatus = IF(Churn = 1, 'Churned', 'Active');
+    ChurnStatus = IF(Churn = 1, 'Churned', 'Active');
 
 -- COLUMN DROPPING
 ALTER TABLE customer_churn
@@ -130,14 +130,14 @@ SET SQL_SAFE_UPDATES = 1;
 -- DATA EXPLORATION AND ANALYSIS
 -- 1
 SELECT ChurnStatus,
-	   COUNT(*) CustomerCount
+       COUNT(*) CustomerCount
 FROM customer_churn
 GROUP BY ChurnStatus
 ORDER BY CustomerCount DESC;
 
 -- 2 & 3
 SELECT ChurnStatus,
-	   ROUND(AVG(Tenure)) AvgTenure,
+       ROUND(AVG(Tenure)) AvgTenure,
        SUM(CashbackAmount) TotalCashbackAmount
 FROM customer_churn
 WHERE ChurnStatus = 'Churned';
@@ -145,19 +145,19 @@ WHERE ChurnStatus = 'Churned';
 -- 4
 SELECT ChurnStatus,
 	   ROUND(
-				(
-					SELECT COUNT(*)
-					FROM customer_churn 
-					WHERE ComplaintReceived = 'Yes'
-						  AND ChurnStatus = 'Churned'
-				) / COUNT(*) * 100, 2
-			) PercentageofChurnedCustomer
+			(
+				SELECT COUNT(*)
+				FROM customer_churn 
+				WHERE ComplaintReceived = 'Yes'
+				AND ChurnStatus = 'Churned'
+			 ) / COUNT(*) * 100, 2
+		) PercentageofChurnedCustomer
 FROM customer_churn
 WHERE ChurnStatus = 'Churned';
 
 -- 5
 SELECT Gender,
-	   COUNT(*) TotalComplaint
+       COUNT(*) TotalComplaint
 FROM customer_churn
 WHERE ComplaintReceived = 'Yes'
 GROUP BY Gender
@@ -165,11 +165,11 @@ ORDER BY TotalComplaint DESC;
 
 -- 6
 SELECT PreferredOrderCat,
-	   CityTier,
+       CityTier,
        COUNT(*) ChurnedCount
 FROM customer_churn
 WHERE ChurnStatus = 'Churned' 
-	  AND PreferredOrderCat = 'Laptop & Accessory'
+      AND PreferredOrderCat = 'Laptop & Accessory'
 GROUP BY CityTier
 ORDER BY ChurnedCount DESC
 LIMIT 1;
@@ -191,7 +191,7 @@ ORDER BY DeviceCount DESC;
 
 -- 9
 SELECT ChurnStatus,
-	   COUNT(*) TotalCountofCustomer
+       COUNT(*) TotalCountofCustomer
 FROM customer_churn
 WHERE ChurnStatus = 'Active' AND HoursSpentOnApp > 3;
 
@@ -225,7 +225,7 @@ WHERE PreferredPaymentMode = 'UPI';
 
 -- 15
 SELECT CityTier, 
-	   COUNT(*) TotalCustomers
+       COUNT(*) TotalCustomers
 FROM customer_churn
 GROUP BY CityTier
 ORDER BY TotalCustomers DESC
@@ -233,13 +233,13 @@ LIMIT 1;
 
 -- 16
 SELECT MaritalStatus,
-	   NumberOfAddress
+       NumberOfAddress
 FROM customer_churn
 WHERE NumberOfAddress = (SELECT MAX(NumberOfAddress) FROM customer_churn);
 
 -- 17
 SELECT Gender,
-	   SUM(CouponUsed) TotalCouponsUsed
+       SUM(CouponUsed) TotalCouponsUsed
 FROM customer_churn
 GROUP BY Gender
 ORDER BY TotalCouponsUsed DESC
@@ -247,7 +247,7 @@ LIMIT 1;
 
 -- 18
 SELECT PreferredOrderCat,
-	   ROUND(AVG(SatisfactionScore)) AvgSatisfactionScore
+       ROUND(AVG(SatisfactionScore)) AvgSatisfactionScore
 FROM customer_churn
 GROUP BY PreferredOrderCat
 ORDER BY AvgSatisfactionScore;
@@ -257,45 +257,45 @@ SELECT PreferredPaymentMode, COUNT(*) TotalOrderCount
 FROM customer_churn
 WHERE PreferredPaymentMode = 'Credit Card'
 	  AND SatisfactionScore = (
-									SELECT MAX(SatisfactionScore) 
-                                    FROM customer_churn
-							   );
+				      SELECT MAX(SatisfactionScore) 
+                                      FROM customer_churn
+				  );
 
 -- 20
 SELECT COUNT(*) CustomerCount
 FROM customer_churn
 WHERE HoursSpentOnApp = 1 
-	  AND DaySinceLastOrder > 5;
+      AND DaySinceLastOrder > 5;
 
 -- 21 
 SELECT ComplaintReceived, 
-	   ROUND(AVG(SatisfactionScore)) AvgSatisfactionScore
+       ROUND(AVG(SatisfactionScore)) AvgSatisfactionScore
 FROM customer_churn
 WHERE ComplaintReceived = 'Yes';
 
 -- 22
 SELECT PreferredOrderCat,
-	   COUNT(*) CustomerCount
+       COUNT(*) CustomerCount
 FROM customer_churn
 GROUP BY PreferredOrderCat
 ORDER BY CustomerCount DESC;
 
 -- 23
 SELECT MaritalStatus,
-	   ROUND(AVG(CashbackAmount), 2) AvgCashbackAmount
+       ROUND(AVG(CashbackAmount), 2) AvgCashbackAmount
 FROM customer_churn
 WHERE MaritalStatus = 'Married';
 
 -- 24
 SELECT PreferredLoginDevice,
-	   ROUND(AVG(NumberOfDeviceRegistered)) AvgNumberofDevicesRegistered
+       ROUND(AVG(NumberOfDeviceRegistered)) AvgNumberofDevicesRegistered
 FROM customer_churn
 GROUP BY PreferredLoginDevice
 HAVING PreferredLoginDevice <> 'Mobile Phone';
 
 -- 25
 SELECT PreferredOrderCat,
-	   COUNT(*) OrderCount
+       COUNT(*) OrderCount
 FROM customer_churn
 WHERE CouponUsed > 5
 GROUP BY PreferredOrderCat
@@ -303,7 +303,7 @@ ORDER BY OrderCount DESC;
 
 -- 26
 SELECT PreferredOrderCat,
-	   ROUND(AVG(CashbackAmount), 2) AvgCashbackAmount
+       ROUND(AVG(CashbackAmount), 2) AvgCashbackAmount
 FROM customer_churn
 GROUP BY PreferredOrderCat
 ORDER BY AvgCashbackAmount DESC
@@ -328,27 +328,27 @@ SELECT
 FROM customer_churn
 GROUP BY DistanceCategory, ChurnStatus
 ORDER BY FIELD(DistanceCategory,
-			   'Very Close Distance',
+	       'Very Close Distance',
                'Close Distance',
                'Moderate Distance',
                'Far Distance'
-			  ),
-		 ChurnStatus;
+	      ),
+         ChurnStatus;
 
 -- 29
 SELECT *
 FROM customer_churn
 WHERE MaritalStatus = 'Married'
-	  AND CityTier = 1
+      AND CityTier = 1
       AND OrderCount > (
-							SELECT ROUND(AVG(OrderCount))
+			    SELECT ROUND(AVG(OrderCount))
                             FROM customer_churn
                        )
 ORDER BY CustomerID;
 
 -- 30 a)
 CREATE TABLE customer_returns (
-	ReturnID INT PRIMARY KEY,
+    ReturnID INT PRIMARY KEY,
     CustomerID INT,
     ReturnDate DATE NOT NULL,
     RefundedAmount INT,
@@ -368,7 +368,7 @@ VALUES
 
 -- 30 b)
 SELECT 
-	r.*,
+    r.*,
     c.Tenure,
     c.PreferredLoginDevice,
     c.CityTier,
