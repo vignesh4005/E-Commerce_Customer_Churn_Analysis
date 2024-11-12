@@ -76,9 +76,3 @@ To effectively reduce churn, the e-commerce company should:
   - Basic queries for customer segmentation (active vs. churned).
   - Analyzed relationships between complaints, gender, and churn.
   - Investigated payment modes, warehouse proximity, and tenure.
-  
----
-
-## Project Resources
-- [SQL Query page](https://github.com/vignesh4005/MySQL_E-Commerce_Customer_Churn_Analysis/blob/main/E-Commerce%20Customer%20Churn%20Query.sql) <!-- Replace with actual link -->
-- [Project Guide Sheet](https://github.com/vignesh4005/MySQL_E-Commerce_Customer_Churn_Analysis/blob/main/E-Commerce%20%20CC%20Analysis%20Guide%20Sheet.pdf) <!-- Replace with actual link -->
